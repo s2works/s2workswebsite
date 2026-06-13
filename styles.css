@@ -100,31 +100,15 @@ section[id] { scroll-margin-top: var(--nav-height); }
 
 .logo {
   display: inline-flex;
-  align-items: flex-end;
+  align-items: center;
   text-decoration: none;
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.5rem;
-  letter-spacing: -0.03em;
-  line-height: 1;
 }
 
-.logo-mark {
-  display: inline-flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: var(--white);
-  color: var(--ink);
-  border-radius: 0.4em;
-  width: 1.75em;
-  height: 1.55em;
-  padding-bottom: 0.02em;
-  font-weight: 800;
-  line-height: 0.95;
+.logo-img {
+  display: block;
+  height: 34px;
+  width: auto;
 }
-
-.logo-text { color: var(--white); }
-.logo-dot { color: var(--white); }
 
 .nav-links {
   display: flex;

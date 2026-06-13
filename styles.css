@@ -160,7 +160,7 @@ section[id] { scroll-margin-top: var(--nav-height); }
 .hero {
   position: relative;
   background:
-    linear-gradient(160deg, rgba(17, 17, 17, 0.66) 0%, rgba(0, 0, 0, 0.78) 100%),
+    linear-gradient(160deg, rgba(17, 17, 17, 0.5) 0%, rgba(0, 0, 0, 0.64) 100%),
     url('assets/hero-desk.jpg') center / cover no-repeat;
   padding: 110px 0 120px;
   text-align: center;
@@ -251,6 +251,7 @@ section[id] { scroll-margin-top: var(--nav-height); }
 
 .philosophy-overlay-text {
   position: relative;
+  z-index: 1;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 1.45rem;

@@ -415,6 +415,15 @@ section[id] { scroll-margin-top: var(--nav-height); }
 
 .combo-card .btn { margin-top: auto; align-self: flex-start; }
 
+.combo-note {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.98rem;
+  max-width: 640px;
+  margin: 40px auto 0;
+}
+.combo-note .accent { font-weight: 600; }
+
 /* ============ Section 5 — Our Team ============ */
 .team-grid {
   display: grid;

@@ -160,7 +160,7 @@ section[id] { scroll-margin-top: var(--nav-height); }
 .hero {
   position: relative;
   background:
-    linear-gradient(160deg, rgba(17, 17, 17, 0.82) 0%, rgba(0, 0, 0, 0.9) 100%),
+    linear-gradient(160deg, rgba(17, 17, 17, 0.5) 0%, rgba(0, 0, 0, 0.62) 100%),
     url('assets/hero-laptop.jpg') center / cover no-repeat;
   padding: 110px 0 120px;
   text-align: center;

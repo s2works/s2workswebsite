@@ -264,13 +264,40 @@ section[id] { scroll-margin-top: var(--nav-height); }
   padding: 36px 30px;
 }
 
-.service-card { text-align: center; }
+.service-card {
+  text-align: center;
+  cursor: default;
+  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.3, 1),
+              box-shadow 0.28s ease,
+              border-color 0.28s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--blue-accent);
+  box-shadow: 0 18px 40px -12px rgba(17, 17, 17, 0.22),
+              0 0 0 1px var(--blue-accent);
+}
 
 .service-icon {
   width: 52px;
   height: 52px;
   color: var(--blue-accent);
   margin-bottom: 20px;
+  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.3, 1),
+              color 0.28s ease;
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.12) translateY(-2px);
+  color: var(--blue-accent-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card,
+  .service-icon { transition: none; }
+  .service-card:hover { transform: none; }
+  .service-card:hover .service-icon { transform: none; }
 }
 
 .service-card h3 {

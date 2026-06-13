@@ -158,12 +158,18 @@ section[id] { scroll-margin-top: var(--nav-height); }
 
 /* ============ Hero ============ */
 .hero {
-  background: linear-gradient(160deg, var(--ink) 0%, var(--ink-deep) 100%);
+  position: relative;
+  background:
+    linear-gradient(160deg, rgba(17, 17, 17, 0.82) 0%, rgba(0, 0, 0, 0.9) 100%),
+    url('assets/hero-laptop.jpg') center / cover no-repeat;
   padding: 110px 0 120px;
   text-align: center;
 }
 
-.hero-inner { max-width: 860px; }
+.hero-inner {
+  position: relative;
+  max-width: 860px;
+}
 
 .hero h1 {
   color: var(--white);

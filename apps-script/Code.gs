@@ -7,31 +7,32 @@
  * SETUP: see PROPOSAL-SETUP.md. In short:
  *   1. Open your proposals Google Sheet.
  *   2. Extensions → Apps Script. Paste this file in.
- *   3. Set SHEET_NAME + NOTIFY_EMAIL below if needed.
+ *   3. Set the SHEET/EMAIL names below if you changed them.
  *   4. Deploy → New deployment → Web app →
  *        Execute as: Me,  Who has access: Anyone.
  *   5. Copy the Web app URL and paste it into proposal/proposal.js
  *      (the APPS_SCRIPT_URL constant).
  *
- * Expected columns (row 1 = headers, exact names):
- *   id | status | client_name | client_company | client_email |
- *   title | date | intro | line_items | total | terms |
- *   signature | signed_name | signed_date
+ * TWO TABS:
+ *  "Proposals" tab — one row per proposal. Headers (row 1, exact names):
+ *     id | status | client_name | client_company | client_email |
+ *     title | date | intro | total | terms |
+ *     signature | signed_name | signed_date
  *
- * line_items cell: one item per line, "Name | Description | Price"
- *   e.g.  High-Converting Website | Custom 5-page site | $2,500
+ *  "Line Items" tab — one row per line item. Headers (row 1):
+ *     proposal_id | item | description | price
+ *  (Match proposal_id to the proposal's id. Description is optional.)
  */
 
-var SHEET_NAME = "Proposals";        // tab name in your spreadsheet
+var SHEET_NAME = "Proposals";        // proposals tab
+var ITEMS_SHEET_NAME = "Line Items"; // line items tab
 var NOTIFY_EMAIL = "info@s2works.ca"; // where signed alerts are sent
 
-function _sheet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  return ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
-}
+function _ss() { return SpreadsheetApp.getActiveSpreadsheet(); }
 
-function _rows() {
-  var sh = _sheet();
+function _table(name, fallbackIndex) {
+  var sh = _ss().getSheetByName(name) || (fallbackIndex != null ? _ss().getSheets()[fallbackIndex] : null);
+  if (!sh) return { sh: null, headers: [], values: [] };
   var values = sh.getDataRange().getValues();
   var headers = values.shift().map(function (h) { return String(h).trim(); });
   return { sh: sh, headers: headers, values: values };
@@ -43,20 +44,38 @@ function _json(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/** GET ?id=xxx  → returns the proposal as JSON (never returns signature image). */
+/** Build the line items array for a given proposal id, from the Line Items tab. */
+function _itemsFor(id) {
+  var t = _table(ITEMS_SHEET_NAME);
+  if (!t.sh) return [];
+  var c = function (name) { return t.headers.indexOf(name); };
+  var pidCol = c("proposal_id"), nameCol = c("item"), descCol = c("description"), priceCol = c("price");
+  var out = [];
+  for (var i = 0; i < t.values.length; i++) {
+    if (String(t.values[i][pidCol]).trim() === String(id).trim()) {
+      out.push({
+        name: nameCol > -1 ? t.values[i][nameCol] : "",
+        desc: descCol > -1 ? t.values[i][descCol] : "",
+        price: priceCol > -1 ? t.values[i][priceCol] : ""
+      });
+    }
+  }
+  return out;
+}
+
+/** GET ?id=xxx  → returns the proposal (with its items) as JSON. */
 function doGet(e) {
   try {
     var id = e && e.parameter ? String(e.parameter.id || "") : "";
     if (!id) return _json({ error: "missing id" });
 
-    var data = _rows();
-    var idCol = data.headers.indexOf("id");
-    for (var i = 0; i < data.values.length; i++) {
-      if (String(data.values[i][idCol]).trim() === id) {
-        var row = data.values[i];
+    var t = _table(SHEET_NAME, 0);
+    var idCol = t.headers.indexOf("id");
+    for (var i = 0; i < t.values.length; i++) {
+      if (String(t.values[i][idCol]).trim() === id) {
+        var row = t.values[i];
         var obj = {};
-        data.headers.forEach(function (h, c) { obj[h] = row[c]; });
-        // Don't leak the stored signature image on GET unless already signed.
+        t.headers.forEach(function (h, c) { obj[h] = row[c]; });
         return _json({
           status: obj.status || "Sent",
           title: obj.title || "Proposal",
@@ -64,7 +83,7 @@ function doGet(e) {
           client_company: obj.client_company || "",
           date: obj.date || "",
           intro: obj.intro || "",
-          line_items: obj.line_items || "",
+          items: _itemsFor(id),
           total: obj.total || "",
           terms: obj.terms || "",
           signature: (String(obj.status).toLowerCase() === "signed") ? (obj.signature || "") : "",
@@ -86,20 +105,20 @@ function doPost(e) {
     var id = String(body.id || "").trim();
     if (!id) return _json({ error: "missing id" });
 
-    var data = _rows();
-    var idCol = data.headers.indexOf("id");
-    var col = function (name) { return data.headers.indexOf(name); };
+    var t = _table(SHEET_NAME, 0);
+    var idCol = t.headers.indexOf("id");
+    var col = function (name) { return t.headers.indexOf(name); };
 
-    for (var i = 0; i < data.values.length; i++) {
-      if (String(data.values[i][idCol]).trim() === id) {
+    for (var i = 0; i < t.values.length; i++) {
+      if (String(t.values[i][idCol]).trim() === id) {
         var rowNum = i + 2; // +1 header, +1 to 1-based
-        var sh = data.sh;
+        var sh = t.sh;
         if (col("status") > -1)      sh.getRange(rowNum, col("status") + 1).setValue("Signed");
         if (col("signed_name") > -1) sh.getRange(rowNum, col("signed_name") + 1).setValue(body.name || "");
         if (col("signed_date") > -1) sh.getRange(rowNum, col("signed_date") + 1).setValue(body.date || "");
         if (col("signature") > -1)   sh.getRange(rowNum, col("signature") + 1).setValue(body.signature || "");
 
-        var company = col("client_company") > -1 ? data.values[i][col("client_company")] : "";
+        var company = col("client_company") > -1 ? t.values[i][col("client_company")] : "";
         try {
           MailApp.sendEmail({
             to: NOTIFY_EMAIL,

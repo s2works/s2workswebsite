@@ -130,18 +130,19 @@ h1, h2, h3 { font-family: var(--font-heading); color: var(--ink); line-height: 1
   margin-right: 6px;
 }
 
-.items-summary { margin-top: 14px; }
+.items-summary { margin-top: 0; }
 .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 8px 22px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
   font-family: var(--font-heading);
-  font-size: 1rem;
-  color: var(--gray-text);
+  font-size: 1.02rem;
 }
+.summary-row span:first-child { font-weight: 600; color: var(--ink); }
 .summary-row span:last-child { font-weight: 700; color: var(--ink); }
-.summary-discount span, .summary-discount span:last-child { color: #1c8a4e; }
+.summary-discount span:last-child { color: #1c8a4e; }
 
 .items-total {
   display: flex;

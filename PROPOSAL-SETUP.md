@@ -28,8 +28,8 @@ If you'd rather build it by hand, make a Google Sheet with **two tabs**:
 ### Tab 1 — `Proposals` (one row per proposal)
 Headers in row 1 (exact names):
 
-| id | status | client_name | client_company | client_email | title | date | intro | total | terms | signature | signed_name | signed_date |
-|----|--------|-------------|----------------|--------------|-------|------|-------|-------|-------|-----------|-------------|-------------|
+| id | status | client_name | client_company | client_email | title | date | intro | subtotal | discount_label | discount | total | terms | signature | signed_name | signed_date |
+|----|--------|-------------|----------------|--------------|-------|------|-------|----------|----------------|----------|-------|-------|-----------|-------------|-------------|
 
 You fill in everything except the last three (`signature`, `signed_name`,
 `signed_date`) — those are filled **automatically** when a client signs.
@@ -40,21 +40,31 @@ You fill in everything except the last three (`signature`, `signed_name`,
 - **title** — e.g. `Website + Lead Capture Proposal`.
 - **date** — e.g. `August 23, 2026`.
 - **intro** — the opening paragraph.
-- **total** — e.g. `$3,000 + $99/mo`.
+- **subtotal** *(optional)* — the pre-discount total, e.g. `$3,000`. Only shown if filled.
+- **discount_label** *(optional)* — what to call the credit, e.g. `New-Client Credit`. Defaults to "Discount".
+- **discount** *(optional)* — the credit amount as a positive number, e.g. `250`. The page shows it as `−$250` in green. Only shown if filled.
+- **total** — the final amount, e.g. `$2,750 + $99/mo`.
 - **terms** — payment terms, validity, etc.
+
+> The subtotal/discount/total are values you type — the page doesn't do the math, so you stay in full control of the numbers.
 
 ### Tab 2 — `Line Items` (one row per item)
 Headers in row 1:
 
-| proposal_id | item | description | price |
-|-------------|------|-------------|-------|
-| 8f3k2m9q | High-Converting Website | Custom 5-page site, mobile-ready | $2,500 |
-| 8f3k2m9q | Lead Capture & Routing | Every inquiry sent straight to you | $500 |
-| 8f3k2m9q | Management & Support | Hosting, security, updates | $99/mo |
+| proposal_id | item | description | original_price | price |
+|-------------|------|-------------|----------------|-------|
+| 8f3k2m9q | High-Converting Website | Custom 5-page site, mobile-ready | $3,000 | $2,500 |
+| 8f3k2m9q | Lead Capture & Routing | Every inquiry sent straight to you |  | $500 |
+| 8f3k2m9q | Automated Review System | More 5-star Google reviews | $400 | Free |
+| 8f3k2m9q | Management & Support | Hosting, security, updates |  | $99/mo |
 
 Each item is its own row. The **`proposal_id`** must match the proposal's
 **`id`** on the Proposals tab — that's how the page knows which items belong to
-which proposal. Add as many rows as you need; `description` is optional.
+which proposal. Add as many rows as you need.
+
+- **description** *(optional)* — a short line under the item name.
+- **original_price** *(optional)* — the item's full price. When filled, it shows **struck through** next to the actual price. Great for showing a discount (`$3,000` → `$2,500`) or a freebie (`$400` → `Free`). Leave blank for normal-priced items.
+- **price** — what they actually pay for this item (`$500`, `Free`, `incl.`, `$99/mo`, etc.).
 
 **To add a new proposal:** add one row on the *Proposals* tab (with a new random
 `id`), then add its items as rows on the *Line Items* tab using that same `id`.

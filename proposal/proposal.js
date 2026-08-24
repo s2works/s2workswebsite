@@ -54,7 +54,7 @@ function render(data, isDemo) {
   $("p-title").textContent = data.title || "Proposal";
   $("p-client").textContent = data.client_name || "";
   $("p-company").textContent = data.client_company || "";
-  $("p-date").textContent = data.date || "";
+  $("p-date").textContent = formatDate(data.date);
 
   if (data.intro) $("p-intro").textContent = data.intro;
   else hide($("p-intro-section"));
@@ -71,11 +71,11 @@ function render(data, isDemo) {
       '<span class="item-price"></span>' +
       (it.desc ? '<span class="item-desc"></span>' : "");
     row.querySelector(".item-name").textContent = it.name || "";
-    row.querySelector(".item-price").textContent = it.price || "";
+    row.querySelector(".item-price").textContent = formatPrice(it.price);
     if (it.desc) row.querySelector(".item-desc").textContent = it.desc;
     wrap.appendChild(row);
   });
-  $("p-total").textContent = data.total || "";
+  $("p-total").textContent = formatPrice(data.total);
 
   if (data.terms) {
     $("p-terms").innerHTML = "";
@@ -115,6 +115,26 @@ function parseItems(str) {
       if (parts.length === 2) return { name: parts[0], price: parts[1] };
       return { name: parts[0], price: "" };
     });
+}
+
+/* ---------- Formatting helpers ---------- */
+function formatDate(v) {
+  if (!v) return "";
+  const s = String(v);
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})T/); // ISO timestamp from a Sheets date cell
+  if (m) {
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    return months[parseInt(m[2], 10) - 1] + " " + parseInt(m[3], 10) + ", " + m[1];
+  }
+  return s; // already a plain string — show as typed
+}
+
+function formatPrice(v) {
+  if (v === null || v === undefined || v === "") return "";
+  if (typeof v === "number") return "$" + v.toLocaleString("en-US");
+  const s = String(v).trim();
+  if (/^-?\d+(\.\d+)?$/.test(s)) return "$" + Number(s).toLocaleString("en-US"); // bare number → dollars
+  return s; // "incl.", "$99/mo", "$2,500" etc. pass through
 }
 
 /* ---------- Signature pad ---------- */

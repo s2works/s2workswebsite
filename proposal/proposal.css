@@ -130,13 +130,12 @@ h1, h2, h3 { font-family: var(--font-heading); color: var(--ink); line-height: 1
   margin-right: 6px;
 }
 
-.items-summary { margin-top: 0; }
+.items-summary { margin-top: 6px; }
 .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
   font-family: var(--font-heading);
   font-size: 1.02rem;
 }
@@ -148,7 +147,7 @@ h1, h2, h3 { font-family: var(--font-heading); color: var(--ink); line-height: 1
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-top: 10px;
+  margin-top: 20px;
   padding: 18px 22px;
   background: var(--ink);
   color: var(--white);

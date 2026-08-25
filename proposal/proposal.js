@@ -16,11 +16,15 @@ const DEMO = {
   date: "August 23, 2026",
   intro: "Thank you for the opportunity to put this together. Below is a clear breakdown of exactly what we'll build, what it costs, and the terms. Everything is designed to bring in more leads and make sure none of them slip through the cracks — with no extra work on your end.",
   items: [
-    { name: "High-Converting Website", desc: "Custom 5-page website, mobile-ready and built to turn visitors into calls.", price: "$2,500" },
+    { name: "High-Converting Website", desc: "Custom 5-page website, mobile-ready and built to turn visitors into calls.", original_price: "$3,000", price: "$2,500" },
     { name: "Lead Capture & Routing", desc: "Every form, email, and call captured and sent straight to you, instantly.", price: "$500" },
+    { name: "Automated Review System", desc: "Set up to bring in more 5-star Google reviews.", original_price: "$400", price: "Free" },
     { name: "Management & Support", desc: "Hosting, security, updates, and changes handled for you.", price: "$99/mo" }
   ],
-  total: "$3,000 + $99/mo",
+  subtotal: "$3,000",
+  discount_label: "New-Client Credit",
+  discount: "$250",
+  total: "$2,750 + $99/mo",
   terms: "50% deposit due on acceptance, balance due on launch. Monthly support billed on the 1st and cancellable any time with 30 days' notice. This proposal is valid for 30 days from the date above."
 };
 
@@ -71,10 +75,28 @@ function render(data, isDemo) {
       '<span class="item-price"></span>' +
       (it.desc ? '<span class="item-desc"></span>' : "");
     row.querySelector(".item-name").textContent = it.name || "";
-    row.querySelector(".item-price").textContent = formatPrice(it.price);
+    const priceCell = row.querySelector(".item-price");
+    priceCell.textContent = "";
+    if (it.original_price) {
+      const was = document.createElement("s");
+      was.className = "item-was";
+      was.textContent = formatPrice(it.original_price);
+      priceCell.appendChild(was);
+      priceCell.appendChild(document.createTextNode(" "));
+    }
+    priceCell.appendChild(document.createTextNode(formatPrice(it.price)));
     if (it.desc) row.querySelector(".item-desc").textContent = it.desc;
     wrap.appendChild(row);
   });
+  // Optional summary: subtotal + discount/credit
+  if (data.subtotal) { $("p-subtotal").textContent = formatPrice(data.subtotal); show($("row-subtotal")); }
+  else hide($("row-subtotal"));
+  if (data.discount) {
+    $("p-discount-label").textContent = data.discount_label || "Discount";
+    $("p-discount").textContent = formatDiscount(data.discount);
+    show($("row-discount"));
+  } else hide($("row-discount"));
+
   $("p-total").textContent = formatPrice(data.total);
 
   if (data.terms) {
@@ -135,6 +157,15 @@ function formatPrice(v) {
   const s = String(v).trim();
   if (/^-?\d+(\.\d+)?$/.test(s)) return "$" + Number(s).toLocaleString("en-US"); // bare number → dollars
   return s; // "incl.", "$99/mo", "$2,500" etc. pass through
+}
+
+function formatDiscount(v) {
+  if (v === null || v === undefined || v === "") return "";
+  if (typeof v === "number") return "−$" + Math.abs(v).toLocaleString("en-US");
+  const s = String(v).trim().replace(/^[−-]/, ""); // drop a leading minus if present
+  const num = Number(s.replace(/[^0-9.]/g, ""));
+  if (/\d/.test(s) && !isNaN(num)) return "−$" + num.toLocaleString("en-US");
+  return "−" + s; // non-numeric label, still prefixed with a minus
 }
 
 /* ---------- Signature pad ---------- */

@@ -123,6 +123,26 @@ h1, h2, h3 { font-family: var(--font-heading); color: var(--ink); line-height: 1
 .item-price { font-family: var(--font-heading); font-weight: 700; color: var(--ink); white-space: nowrap; text-align: right; }
 .item-desc { grid-column: 1 / -1; font-size: 0.95rem; color: var(--gray-text); margin-top: 2px; }
 
+.item-was {
+  color: var(--muted);
+  text-decoration: line-through;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.items-summary { margin-top: 6px; }
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  font-family: var(--font-heading);
+  font-size: 1.02rem;
+}
+.summary-row span:first-child { font-weight: 600; color: var(--ink); }
+.summary-row span:last-child { font-weight: 700; color: var(--ink); }
+.summary-discount span:last-child { color: #1c8a4e; }
+
 .items-total {
   display: flex;
   justify-content: space-between;

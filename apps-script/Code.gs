@@ -16,12 +16,14 @@
  * TWO TABS:
  *  "Proposals" tab — one row per proposal. Headers (row 1, exact names):
  *     id | status | client_name | client_company | client_email |
- *     title | date | intro | total | terms |
- *     signature | signed_name | signed_date
+ *     title | date | intro | subtotal | discount_label | discount |
+ *     total | terms | signature | signed_name | signed_date
+ *   (subtotal, discount_label, discount are OPTIONAL — for the summary block.)
  *
  *  "Line Items" tab — one row per line item. Headers (row 1):
- *     proposal_id | item | description | price
- *  (Match proposal_id to the proposal's id. Description is optional.)
+ *     proposal_id | item | description | original_price | price
+ *   (Match proposal_id to the proposal's id. description and original_price
+ *    are OPTIONAL. original_price shows struck through next to price.)
  */
 
 var SHEET_NAME = "Proposals";        // proposals tab
@@ -44,26 +46,29 @@ function _json(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/** Build the line items array for a given proposal id, from the Line Items tab. */
+/** Build the line items array for a given proposal id, from the Line Items tab.
+ *  Returns every column in the tab (so new columns like original_price flow
+ *  through automatically), plus name/desc aliases the page uses. */
 function _itemsFor(id) {
   var t = _table(ITEMS_SHEET_NAME);
   if (!t.sh) return [];
-  var c = function (name) { return t.headers.indexOf(name); };
-  var pidCol = c("proposal_id"), nameCol = c("item"), descCol = c("description"), priceCol = c("price");
+  var pidCol = t.headers.indexOf("proposal_id");
   var out = [];
   for (var i = 0; i < t.values.length; i++) {
     if (String(t.values[i][pidCol]).trim() === String(id).trim()) {
-      out.push({
-        name: nameCol > -1 ? t.values[i][nameCol] : "",
-        desc: descCol > -1 ? t.values[i][descCol] : "",
-        price: priceCol > -1 ? t.values[i][priceCol] : ""
-      });
+      var it = {};
+      t.headers.forEach(function (h, c) { it[h] = t.values[i][c]; });
+      it.name = it.item;        // alias for the page
+      it.desc = it.description; // alias for the page
+      out.push(it);
     }
   }
   return out;
 }
 
-/** GET ?id=xxx  → returns the proposal (with its items) as JSON. */
+/** GET ?id=xxx  → returns the proposal (all columns) plus its items, as JSON.
+ *  Returns every column by name, so adding new columns to the Proposals tab
+ *  (e.g. subtotal, discount) needs no further script changes. */
 function doGet(e) {
   try {
     var id = e && e.parameter ? String(e.parameter.id || "") : "";
@@ -73,23 +78,14 @@ function doGet(e) {
     var idCol = t.headers.indexOf("id");
     for (var i = 0; i < t.values.length; i++) {
       if (String(t.values[i][idCol]).trim() === id) {
-        var row = t.values[i];
         var obj = {};
-        t.headers.forEach(function (h, c) { obj[h] = row[c]; });
-        return _json({
-          status: obj.status || "Sent",
-          title: obj.title || "Proposal",
-          client_name: obj.client_name || "",
-          client_company: obj.client_company || "",
-          date: obj.date || "",
-          intro: obj.intro || "",
-          items: _itemsFor(id),
-          total: obj.total || "",
-          terms: obj.terms || "",
-          signature: (String(obj.status).toLowerCase() === "signed") ? (obj.signature || "") : "",
-          signed_name: obj.signed_name || "",
-          signed_date: obj.signed_date || ""
-        });
+        t.headers.forEach(function (h, c) { obj[h] = t.values[i][c]; });
+        obj.status = obj.status || "Sent";
+        obj.title = obj.title || "Proposal";
+        obj.items = _itemsFor(id);
+        // Only expose the stored signature image once the proposal is signed.
+        if (String(obj.status).toLowerCase() !== "signed") obj.signature = "";
+        return _json(obj);
       }
     }
     return _json({ error: "not found" });

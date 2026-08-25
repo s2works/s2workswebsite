@@ -295,7 +295,7 @@ $("btn-pdf").addEventListener("click", () => {
     image: { type: "jpeg", quality: 0.96 },
     html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
     jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
-    pagebreak: { mode: ["css", "legacy"] }
+    pagebreak: { mode: ["css", "legacy"], avoid: [".item", ".totals", ".signed-box", ".sig-pad-wrap", ".summary-row"] }
   }).from(doc).save().then(() => {
     document.body.classList.remove("exporting");
   }).catch(() => {

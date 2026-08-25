@@ -282,6 +282,22 @@ h1, h2, h3 { font-family: var(--font-heading); color: var(--ink); line-height: 1
   .signed-img { max-width: 100%; }
 }
 
+/* ---- Keep blocks intact across PDF / print page breaks ---- */
+.item,
+.summary-row,
+.items-total,
+.totals,
+.signed-box,
+.sig-pad-wrap {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.section-heading,
+.item-group-label {
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
 /* ---- Export / print: hide interactive controls ---- */
 .exporting .no-print, .exporting .sig-clear { display: none !important; }
 @media print {

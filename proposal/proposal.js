@@ -5,7 +5,7 @@
 /* CONFIG — after you deploy the Google Apps Script web app,
    paste its /exec URL between the quotes below. Until then, the
    page runs in demo mode. */
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxrptucRxjAlfdu9JSQ3rrGPdXAToPNlfHVUduiMyaeTRCdGKeB1H-I9jVFlFxpb0k/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9H-xwWCLAh1lnYYi57yGgMVmFvEzaTtn-berv8xGWLMrXZkgXinZAxVQikZ3vIcA/exec";
 
 /* Demo proposal shown when ?id=demo (or no backend configured). */
 const DEMO = {

@@ -112,6 +112,17 @@ h1, h2, h3 { font-family: var(--font-heading); color: var(--ink); line-height: 1
 
 /* ---- Line items ---- */
 .items { display: flex; flex-direction: column; }
+.item-group-label {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 20px;
+  padding-bottom: 4px;
+}
+.item-group-label:first-child { margin-top: 4px; }
 .item {
   display: grid;
   grid-template-columns: 1fr auto;

@@ -67,27 +67,28 @@ function render(data, isDemo) {
   const items = Array.isArray(data.items) ? data.items : parseItems(data.line_items || data.items || "");
   const wrap = $("p-items");
   wrap.innerHTML = "";
-  items.forEach((it) => {
-    const row = document.createElement("div");
-    row.className = "item";
-    row.innerHTML =
-      '<span class="item-name"></span>' +
-      '<span class="item-price"></span>' +
-      (it.desc ? '<span class="item-desc"></span>' : "");
-    row.querySelector(".item-name").textContent = it.name || "";
-    const priceCell = row.querySelector(".item-price");
-    priceCell.textContent = "";
-    if (it.original_price) {
-      const was = document.createElement("s");
-      was.className = "item-was";
-      was.textContent = formatPrice(it.original_price);
-      priceCell.appendChild(was);
-      priceCell.appendChild(document.createTextNode(" "));
-    }
-    priceCell.appendChild(document.createTextNode(formatPrice(it.price)));
-    if (it.desc) row.querySelector(".item-desc").textContent = it.desc;
-    wrap.appendChild(row);
-  });
+
+  // Split one-time vs recurring (price containing /mo, /yr, "monthly", etc.)
+  const oneTime = items.filter((it) => !isRecurring(it.price));
+  const monthly = items.filter((it) => isRecurring(it.price));
+
+  const addLabel = (text) => {
+    const lbl = document.createElement("div");
+    lbl.className = "item-group-label";
+    lbl.textContent = text;
+    wrap.appendChild(lbl);
+  };
+  const addRows = (list) => list.forEach((it) => wrap.appendChild(buildItemRow(it)));
+
+  // Only show the group headers when there's actually a mix of both.
+  if (oneTime.length && monthly.length) {
+    addLabel("One-time");
+    addRows(oneTime);
+    addLabel("Monthly");
+    addRows(monthly);
+  } else {
+    addRows(items);
+  }
   // Optional summary: subtotal + discount/credit
   if (data.subtotal) { $("p-subtotal").textContent = formatPrice(data.subtotal); show($("row-subtotal")); }
   else hide($("row-subtotal"));
@@ -137,6 +138,33 @@ function parseItems(str) {
       if (parts.length === 2) return { name: parts[0], price: parts[1] };
       return { name: parts[0], price: "" };
     });
+}
+
+/* ---------- Line item helpers ---------- */
+function isRecurring(price) {
+  return /(\/\s*(mo|month|yr|year|wk|week)|monthly|weekly|yearly|annually|per\s+month)/i.test(String(price || ""));
+}
+
+function buildItemRow(it) {
+  const row = document.createElement("div");
+  row.className = "item";
+  row.innerHTML =
+    '<span class="item-name"></span>' +
+    '<span class="item-price"></span>' +
+    (it.desc ? '<span class="item-desc"></span>' : "");
+  row.querySelector(".item-name").textContent = it.name || "";
+  const priceCell = row.querySelector(".item-price");
+  priceCell.textContent = "";
+  if (it.original_price) {
+    const was = document.createElement("s");
+    was.className = "item-was";
+    was.textContent = formatPrice(it.original_price);
+    priceCell.appendChild(was);
+    priceCell.appendChild(document.createTextNode(" "));
+  }
+  priceCell.appendChild(document.createTextNode(formatPrice(it.price)));
+  if (it.desc) row.querySelector(".item-desc").textContent = it.desc;
+  return row;
 }
 
 /* ---------- Formatting helpers ---------- */

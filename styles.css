@@ -217,6 +217,9 @@ section[id] { scroll-margin-top: var(--nav-height); }
 
 .section-title-left { text-align: left; margin-bottom: 8px; }
 
+/* line break that only applies on small screens */
+.br-mobile { display: none; }
+
 /* ============ Section 1 — Our Philosophy ============ */
 .philosophy-grid {
   display: grid;
@@ -578,6 +581,8 @@ section[id] { scroll-margin-top: var(--nav-height); }
     gap: 32px;
   }
   .philosophy-copy { order: -1; }
+
+  .br-mobile { display: inline; }
 
   .cards-3,
   .cards-4 { grid-template-columns: 1fr; }

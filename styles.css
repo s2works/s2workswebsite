@@ -577,6 +577,7 @@ section[id] { scroll-margin-top: var(--nav-height); }
     grid-template-columns: 1fr;
     gap: 32px;
   }
+  .philosophy-copy { order: -1; }
 
   .cards-3,
   .cards-4 { grid-template-columns: 1fr; }

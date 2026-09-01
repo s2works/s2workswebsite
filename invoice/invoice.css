@@ -1,0 +1,99 @@
+/* ============================================================
+   s2works — Invoice page (extends /proposal/proposal.css)
+   ============================================================ */
+
+/* four-column meta instead of the proposal's three */
+.inv-meta { grid-template-columns: repeat(4, 1fr); }
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.title-row h1 { margin-bottom: 0; }
+
+.paid-badge {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1c8a4e;
+  border: 2px solid #1c8a4e;
+  border-radius: 999px;
+  padding: 5px 16px;
+}
+
+/* ---- Payment card ---- */
+.pay-card {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue-accent);
+  border-radius: 12px;
+  background: #fafbfb;
+  padding: 24px 26px;
+}
+.pay-kicker {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-accent-dark);
+  margin-bottom: 16px;
+}
+.pay-grid {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 22px 40px;
+  justify-content: start;
+  margin: 0;
+}
+.pay-grid dt {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.pay-grid dd {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  word-break: break-word;
+}
+.pay-note {
+  margin-top: 18px;
+  font-size: 0.92rem;
+  color: var(--gray-text);
+}
+
+/* ---- Paid confirmation ---- */
+.paid-card {
+  border: 1px solid #cde9d8;
+  border-radius: 12px;
+  background: #f2faf5;
+  padding: 22px 26px;
+}
+.paid-line {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #1c8a4e;
+}
+.paid-date { font-size: 0.92rem; color: var(--gray-text); margin-top: 4px; }
+
+/* keep payment/paid blocks whole in the PDF */
+.pay-card, .paid-card { break-inside: avoid; page-break-inside: avoid; }
+
+@media (max-width: 720px) {
+  .inv-meta { grid-template-columns: repeat(2, 1fr); }
+  .pay-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (max-width: 620px) {
+  .inv-meta { grid-template-columns: 1fr; }
+}

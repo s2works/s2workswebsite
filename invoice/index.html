@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice — s2works.</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <!-- proposal.css doubles as the shared document stylesheet for both docs -->
+  <link rel="stylesheet" href="/proposal/proposal.css">
+  <link rel="stylesheet" href="/invoice/invoice.css">
+</head>
+<body>
+
+  <div id="state-loading" class="state-msg">
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Loading your invoice…</p>
+  </div>
+
+  <div id="state-error" class="state-msg" hidden>
+    <h1>Invoice not found</h1>
+    <p>This invoice link may be incorrect or has expired. Please check the link, or contact us at <a href="mailto:info@s2works.ca">info@s2works.ca</a>.</p>
+  </div>
+
+  <main id="invoice" class="wrap" hidden>
+    <article class="proposal-doc" id="invoice-doc">
+
+      <header class="doc-header">
+        <img src="/assets/logo-white.png" alt="s2works" class="doc-logo">
+        <span class="doc-label">Invoice</span>
+      </header>
+
+      <div class="doc-body">
+
+        <section class="doc-title-block">
+          <div class="title-row">
+            <h1 id="i-title">Invoice</h1>
+            <span class="paid-badge" id="paid-badge" hidden>Paid</span>
+          </div>
+          <div class="doc-meta inv-meta">
+            <div>
+              <span class="meta-label">Billed to</span>
+              <span class="meta-value" id="i-client"></span>
+              <span class="meta-sub" id="i-company"></span>
+            </div>
+            <div>
+              <span class="meta-label">From</span>
+              <span class="meta-value">s2works.</span>
+              <span class="meta-sub">info@s2works.ca</span>
+            </div>
+            <div>
+              <span class="meta-label">Invoice</span>
+              <span class="meta-value" id="i-number"></span>
+              <span class="meta-sub" id="i-issued"></span>
+            </div>
+            <div>
+              <span class="meta-label">Due</span>
+              <span class="meta-value" id="i-due"></span>
+              <span class="meta-sub" id="i-terms-short"></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="doc-section" id="i-intro-section">
+          <p class="doc-intro" id="i-intro"></p>
+        </section>
+
+        <section class="doc-section">
+          <h2 class="section-heading">Summary</h2>
+          <div class="items" id="i-items"></div>
+          <div class="totals">
+            <div class="items-summary">
+              <div class="summary-row" id="row-subtotal" hidden>
+                <span>Subtotal</span>
+                <span id="i-subtotal"></span>
+              </div>
+              <div class="summary-row" id="row-tax" hidden>
+                <span id="i-tax-label">Tax</span>
+                <span id="i-tax"></span>
+              </div>
+            </div>
+            <div class="items-total">
+              <span id="i-total-label">Amount due</span>
+              <span id="i-total"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Payment instructions (hidden once paid) -->
+        <section class="doc-section pay-section" id="pay-section">
+          <h2 class="section-heading">How to pay</h2>
+          <div class="pay-card">
+            <p class="pay-kicker">Interac e-Transfer</p>
+            <dl class="pay-grid">
+              <div><dt>Send to</dt><dd id="pay-email">info@s2works.ca</dd></div>
+              <div><dt>Reference</dt><dd id="pay-ref"></dd></div>
+              <div><dt>Amount</dt><dd id="pay-amount"></dd></div>
+            </dl>
+            <p class="pay-note" id="pay-note">Auto-deposit is enabled — no security question needed. Please include the reference so we can match your payment.</p>
+          </div>
+        </section>
+
+        <!-- Paid confirmation (shown once paid) -->
+        <section class="doc-section" id="paid-section" hidden>
+          <div class="paid-card">
+            <p class="paid-line">✓ Paid in full — thank you.</p>
+            <p class="paid-date" id="paid-date"></p>
+          </div>
+        </section>
+
+        <section class="doc-section" id="i-notes-section">
+          <h2 class="section-heading">Notes</h2>
+          <div class="doc-terms" id="i-notes"></div>
+        </section>
+
+      </div>
+    </article>
+
+    <div class="doc-actions no-print">
+      <button type="button" class="btn btn-outline-dark btn-lg" id="btn-pdf">Download PDF</button>
+    </div>
+  </main>
+
+  <script src="/assets/html2pdf.bundle.min.js"></script>
+  <script src="/invoice/invoice.js"></script>
+</body>
+</html>

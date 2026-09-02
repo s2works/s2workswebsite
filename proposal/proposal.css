@@ -97,7 +97,7 @@ h1, h2, h3 { font-family: var(--font-heading); color: var(--ink); line-height: 1
   margin-bottom: 4px;
 }
 .meta-value { font-family: var(--font-heading); font-weight: 600; color: var(--ink); font-size: 1rem; }
-.meta-sub { font-size: 0.9rem; color: var(--muted); }
+.meta-sub { font-size: 0.8rem; color: var(--muted); }
 
 /* ---- Sections ---- */
 .doc-section { margin-bottom: 34px; }
